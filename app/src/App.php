@@ -6,6 +6,8 @@
 // Déclaration du namespace de ce fichier
 namespace App;
 
+use Exception;
+
 class App
 {
     // Singleton étape 2 : on crée une propriété statique pour stocker l'instance unique
@@ -43,6 +45,6 @@ class App
     // private est interdit dans ce cas, on va lui faire renvoyer une exception
     public function __wakeup()
     {
-        throw new \Exception( "Impossible de désérialiser une instance de " . __CLASS__ );
+        throw new Exception( "Impossible de désérialiser une instance de " . __CLASS__ );
     }
 }
