@@ -14,12 +14,12 @@ class View
      * @param string $name Nom de la vue (construction représentant le chemin du fichier)
      * @return View Instance
      */
-    public function __construct( string $name = '' )
+    public function __construct(string $name = '')
     {
         $this->name = $name;
     }
 
-    public function render( ): void
+    public function render(): void
     {
         require_once self::COMMON_PATH . 'top.phtml';
 
@@ -30,7 +30,7 @@ class View
 
     private function getTemplatePath(): string
     {
-        return self::VIEW_PATH . str_replace( ':', DS, $this->name ) . '.phtml';
+        return self::VIEW_PATH . str_replace(':', DS, $this->name) . '.phtml';
 
         //return self::VIEW_PATH . implode(DS, explode( ':', $path )) . '.phtml';
 
