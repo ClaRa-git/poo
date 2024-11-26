@@ -9,9 +9,13 @@ class PageController
     // page d'accueil
     public function index(): void
     {
-        $view = new View( 'page:home' );
+        $view = new View('page:home');
 
-        $view->render();
+        $data = [
+            'title' => 'Accueil - Autodingo.com'
+        ];
+
+        $view->render($data);
     }
 
     // mentions légales

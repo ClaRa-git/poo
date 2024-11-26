@@ -14,6 +14,8 @@ use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Routing\Attributes;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 
+use Symplefony\View;
+
 use App\Controller\PageController;
 use App\Controller\AdminController;
 use App\Controller\AuthController;
@@ -84,11 +86,9 @@ final class App
         try {
             $this->router->dispatch();
         } catch (RouteNotFoundException $e) { // Page 404 avec statut HTTP adéquat pour les pages non listées dans les routes
-            http_response_code(404);
-            echo '404 - Not found';
-        } catch (Throwable $e) { // Erreur 500 avec statut HTTP adéquat pour tout autre problème temporaire ou non
-            http_response_code(500);
-            echo '500 - Internal server error';
+            View::renderError(404);
+        } catch (Throwable $e) { // Erreur 500 pour tout autre problème temporaire ou non
+            View::renderError(500);
         }
     }
 
