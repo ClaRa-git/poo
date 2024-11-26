@@ -53,7 +53,7 @@ services:
   #     - ./app:/var/www/html
   #   restart: always
   #   environment:
-  #     TZ: UTC
+  #     TZ: Europe/Paris
   #   depends_on:
   #     - php
 

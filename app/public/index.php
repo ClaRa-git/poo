@@ -1,28 +1,13 @@
 <?php
 
+use App\App;
+
+const DS = DIRECTORY_SEPARATOR;
+define( 'ROOT_PATH' , dirname(__FILE__, 2) . DS ); // Chemin physique du dossier racine
+define( 'APP_PATH' , ROOT_PATH . 'src' . DS ); // Chemin physique du dossier src 
+
 // Chargement de l'autoloader de Composer
-require_once '../vendor/autoload.php';
+require_once ROOT_PATH .'vendor'. DS .'autoload.php';
 
-use MiladRahimi\PhpRouter\Router;
-use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
-use Laminas\Diactoros\Response\HtmlResponse;
-
-$router = Router::create();
-
-$router->get( '/', function () {
-    return 'Bonjour page d\'accueil';
-});
-
-$router->get( '/contact', function () {
-    return 'Bonjour page de contact';
-});
-
-try {
-    $router->dispatch();
-} catch ( RouteNotFoundException $e ) { // Page 404 avec statut HTTP adéquat pour les pages non listées dans les routes
-    http_response_code( 404 );
-    echo '404 - Not found';
-} catch ( Throwable $e ) { // Erreur 500 avec statut HTTP adéquat pour tout autre problème temporaire ou non
-    http_response_code( 500 );
-    echo '500 - Internal server error';
-}
+// Démarrage de l'application
+App::getApp()->start();

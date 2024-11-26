@@ -7,14 +7,22 @@
 namespace App;
 
 use Exception;
+use Throwable;
 
-class App
+use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
+
+use App\Controller\PageController;
+
+final class App
 {
     // Singleton étape 2 : on crée une propriété statique pour stocker l'instance unique
     // self → fait référence à la classe courante (App)
     // ? devant "self" pour autoriser la valeur "null"
     private static ?self $app_instance = null;
-    private string $last_message;
+    
+    // Le routeur de l'application
+    private Router $router;
 
     // Singleton étape 3 : on crée une méthode publique statique qui permet d'obtenir l'instance unique
     public static function getApp(): self
@@ -27,15 +35,48 @@ class App
 
         return self::$app_instance;
     }
-    public function toto( string $msg ): void
+
+    // Démarrage de l'application
+    public function start(): void
     {
-        $this->last_message = $msg;
-        echo $msg . ' Je suis Toto !';
+        // Enregistrement des routes
+        $this->registerRoutes();
+
+        // Démarrage du routeur
+        $this->startRouter();
     }
 
     // Singleton étape 1 : bloquer l'utilisation de new depuis l'extérieur
     // → passer la méthode __construct (le constructeur) en "private"
-    private function __construct(){ }
+    private function __construct()
+    {
+        // Création du routeur
+        $this->router = Router::create();
+    }
+
+    // Enregistrement des routes de l'application
+    private function registerRoutes(): void
+    {
+        // Page d'accueil
+        $this->router->get( '/', [ PageController::class, 'index' ] );
+
+        // Mentions légales
+        $this->router->get( '/mentions-legales', [ PageController::class, 'legalMentions' ] );
+    }
+
+    // Démarrage du routeur
+    private function startRouter(): void
+    {
+        try {
+            $this->router->dispatch();
+        } catch ( RouteNotFoundException $e ) { // Page 404 avec statut HTTP adéquat pour les pages non listées dans les routes
+            http_response_code( 404 );
+            echo '404 - Not found';
+        } catch ( Throwable $e ) { // Erreur 500 avec statut HTTP adéquat pour tout autre problème temporaire ou non
+            http_response_code( 500 );
+            echo '500 - Internal server error';
+}
+    }
 
     // Singleton étape 4 : bloquer le clonage de l'instance
     // → passer la méthode __clone en "private"
