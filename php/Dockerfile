@@ -7,6 +7,12 @@ RUN apk add --no-cache icu-dev \
     && docker-php-ext-install intl \
     && docker-php-ext-enable intl
 
+# installation de xdebug
+RUN apk --no-cache --update add linux-headers pcre-dev ${PHPIZE_DEPS} \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && apk del linux-headers pcre-dev ${PHPIZE_DEPS}
+
 ARG UNAME=www-data
 ARG UGROUP=www-data
 ARG UID=1001

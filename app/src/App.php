@@ -84,7 +84,7 @@ final class App
 
     // Singleton étape 5 : bloquer la désérialisation de l'instance
     // private est interdit dans ce cas, on va lui faire renvoyer une exception
-    public function __wakeup()
+    public function __wakeup() // __wakeup ne peut pas être private, cela crée un warning
     {
         throw new Exception( "Impossible de désérialiser une instance de " . __CLASS__ );
     }
