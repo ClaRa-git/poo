@@ -13,6 +13,7 @@ use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 
 use App\Controller\PageController;
+use App\Controller\AdminController;
 
 final class App
 {
@@ -59,6 +60,9 @@ final class App
     {
         // Page d'accueil
         $this->router->get( '/', [ PageController::class, 'index' ] );
+
+        // Page d'administration
+        $this->router->get( '/admin', [ AdminController::class, 'dashboard' ] );
 
         // Mentions légales
         $this->router->get( '/mentions-legales', [ PageController::class, 'legalMentions' ] );
