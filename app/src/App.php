@@ -89,7 +89,7 @@ final class App
             View::renderError(404);
         } catch (Throwable $e) { // Erreur 500 pour tout autre problème temporaire ou non
             View::renderError(500);
-            //var_dump($e);
+            var_dump($e);
         }
     }
 

@@ -2,10 +2,14 @@
 
 namespace App\Model;
 
+use PDO;
+use Symplefony\Database;
 use Symplefony\Model\Model;
 
 class UserModel extends Model
 {
+    private const TABLE_NAME = 'users';
+
     protected string $password;
     public function getPassword(): string
     {
@@ -28,25 +32,25 @@ class UserModel extends Model
         return $this;
     }
 
-    protected string $firstname;
-    public function getFirstname(string $value): string
+    protected string $first_name;
+    public function getFirstname(): string
     {
-        return $this->firstname;
+        return $this->first_name;
     }
     public function setFirstname(string $value): self
     {
-        $this->firstname = $value;
+        $this->first_name = $value;
         return $this;
     }
 
-    protected string $lastname;
+    protected string $last_name;
     public function getLastname(): string
     {
-        return $this->lastname;
+        return $this->last_name;
     }
     public function setLastname(string $value): self
     {
-        $this->lastname = $value;
+        $this->last_name = $value;
         return $this;
     }
 
@@ -59,5 +63,66 @@ class UserModel extends Model
     {
         $this->phone_number = $value;
         return $this;
+    }
+
+    /*
+    CRUD : Create
+    */
+    public static function create(self $user): ?self
+    {
+        $query = sprintf(
+            'INSERT INTO %s (`email`, `password`, `first_name`, `last_name`, `phone_number`)
+             VALUES (:email, :password, :first_name, :last_name, :phone_number)',
+            self::TABLE_NAME
+        );
+
+        $sth = Database::getPDO()->prepare($query);
+
+        // Si la requête a échoué, on retourne null
+        if (!$sth) return null;
+
+        $success =
+            $sth->execute([
+                'email' => $user->getEmail(),
+                'password' => $user->getPassword(),
+                'first_name' => $user->getFirstname(),
+                'last_name' => $user->getLastname(),
+                'phone_number' => $user->getPhone_number()
+            ]);
+
+        if (!$success) return null;
+
+        // Ajout de l'ID généré par la BDD
+        $user->setId(Database::getPDO()->lastInsertId());
+
+        return $user;
+    }
+
+    public static function readOne(int $id): ?self
+    {
+        $query = sprintf(
+            "
+        SELECT * FROM %s WHERE `id` = :id",
+            self::TABLE_NAME
+        );
+
+        $sth = Database::getPDO()->prepare($query);
+
+        if (!$sth) return null;
+
+        $success =
+            $sth->execute(
+                [
+                    'id' => $id
+                ]
+            );
+
+        if (!$success) return null;
+
+        $data = $sth->fetch();
+
+        if (!$data) return null;
+
+        return new self($data);
     }
 }
